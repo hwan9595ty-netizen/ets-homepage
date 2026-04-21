@@ -65,7 +65,7 @@ const navItems = [
   { label: "회사소개", target: "footer-cta" },
 ];
 
-const heroImages = ["/hero/1.jpg", "/hero/2.jpg", "/hero/3.jpg", "/hero/4.jpg"];
+const heroImages = ["/hero/1.jpg", "/hero/2.png", "/hero/3.jpg", "/hero/4.png"];
 
 const categories: Category[] = [
   { slug: "all", label: "전체" },
@@ -1347,7 +1347,7 @@ function FooterCTA() {
         <div className="mt-10 flex justify-center">
           <div className="flex w-full max-w-[700px] justify-between gap-10">
             <div className="flex flex-col items-center text-center">
-              <div className="text-[18px] font-bold lg:text-[20px]">최첨단 SEM 및 X-ray 전문</div>
+              <div className="text-[18px] font-bold lg:text-[20px]">최첨단 SEM 전문</div>
               <p className="mt-4 text-[14px] leading-7 text-white/85">
                 산업 전반에 걸쳐 정밀한 분석과
                 <br />
@@ -1388,15 +1388,15 @@ function SiteFooter() {
 
         <div className="pt-10 text-[18px] leading-9 text-white/88">
           <div>
-            • <span className="font-bold">ADDR</span> : 경기도 오산시 수목원로88번길 35, A동 803호(현대테라타워CMC)
+            • <span className="font-bold">ADDR</span> : 경기도 화성시 동탄대로 646-4 1110~2호(메가비즈타워 B동)
           </div>
           <div>
-            • <span className="font-bold">TEL</span> : 010-6545-3162,{" "}
-            <span className="font-bold">E-MAIL</span> : sem@semlab.co.kr
+            • <span className="font-bold">TEL</span> : 010-8615-7424,{" "}
+            <span className="font-bold">E-MAIL</span> : Danielkim@ets88.co.kr
           </div>
         </div>
 
-        <div className="mt-10 text-[16px] text-white/70">COPYRIGHT © 2024 SEMLAB ALL RIGHTS RESERVED</div>
+        <div className="mt-10 text-[16px] text-white/70">COPYRIGHT © 2020 ETS ALL RIGHTS RESERVED</div>
       </div>
     </footer>
   );
