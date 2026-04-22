@@ -2,6 +2,128 @@
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
+const exactTemTranslations: Record<string, { en: string; zh: string }> = {
+  "MEMS-TEM-STM Multi-Field": { en: "MEMS-TEM-STM Multi-Field", zh: "MEMS-TEM-STM 多场测量" },
+  "High-Temperature Mechanics": { en: "High-Temperature Mechanics", zh: "高温力学" },
+  "TEM-STM Low Temperature Electrical": { en: "TEM-STM Low Temperature Electrical", zh: "TEM-STM 低温电学" },
+  "TEM-STM Photoelectric Integrated": { en: "TEM-STM Photoelectric Integrated", zh: "TEM-STM 光电一体化" },
+  "TEM-STM Integrated Force": { en: "TEM-STM Integrated Force", zh: "TEM-STM 力学一体化" },
+  "TEM-STM Electrical": { en: "TEM-STM Electrical", zh: "TEM-STM 电学测量" },
+  "MEMS Atmosphere Heating": { en: "MEMS Atmosphere Heating", zh: "MEMS 气氛加热" },
+  "MEMS Liquid Electrochemical": { en: "MEMS Liquid Electrochemical", zh: "MEMS 液体电化学" },
+  "MEMS Low Temperature Electrical": { en: "MEMS Low Temperature Electrical", zh: "MEMS 低温电学" },
+  "MEMS Heated Electrical": { en: "MEMS Heated Electrical", zh: "MEMS 加热电学" },
+  "Stretching": { en: "Stretching", zh: "拉伸测试" },
+  "360° Horizontal Rotating": { en: "360° Horizontal Rotating", zh: "360° 水平旋转" },
+  "Frozen": { en: "Cryogenic System", zh: "冷冻系统" },
+  "Vacuum Transfer": { en: "Vacuum Transfer", zh: "真空转移" },
+  "Multi-well": { en: "Multi-well", zh: "多孔位" },
+  "High Temperature Mechanical": { en: "High Temperature Mechanical", zh: "高温机械" },
+  "TEM Photoelectric Property Testing": { en: "TEM Photoelectric Property Testing", zh: "TEM 光电性能测试" },
+  "TEM Cryo-electrical Test": { en: "TEM Cryo-electrical Test", zh: "TEM 低温电学测试" },
+  "TEM Mechanical-Electrical": { en: "TEM Mechanical-Electrical", zh: "TEM 机电耦合测试" },
+  "PicoFemto 현장 MEMS-TEM-STM 다중장 측정 시스템(PicoFemto) 현장 투과 전자 현미경 실험 시스템으로, 연구자들이 투과 전자현미경 내에서 제어된 다장 환경을 구축하여 다중 여기 하에서 재료나 장치 등 시료를 현장 특성화할 수 있도록 합니다.": { en: "PicoFemto in-situ MEMS-TEM-STM multi-field measurement system enables researchers to build a controlled multi-field environment inside a TEM for in-situ characterization of materials or devices under multiple excitations.", zh: "PicoFemto 原位 MEMS-TEM-STM 多场测量系统可帮助研究人员在 TEM 内构建受控多场环境，从而在多重激励下对材料或器件进行原位表征。" },
+  "PicoFemto 현장 TEM 고온 역학 측정 시스템은 기계적 측정 모듈과 MEMS 칩 모듈을 통합하여 시료를 최대 1000 °C까지 가열하는 동안 정량적 기계적 측정을 수행할 수 있습니다. MEMS 칩 모듈은 가열 칩 또는 전기 측정 칩 중 선택할 수 있습니다. 기계적 측정 모듈은 다양한 실험 요구에 맞게 다양한 부하 센서를 선택할 수 있습니다.": { en: "PicoFemto in-situ TEM high-temperature mechanics system integrates a mechanical measurement module with MEMS chips, enabling quantitative mechanical measurements while heating samples up to 1000°C.", zh: "PicoFemto 原位 TEM 高温力学系统集成机械测量模块与 MEMS 芯片，可在样品加热至 1000°C 的过程中进行定量力学测量。" },
+  "피코펨토 인사이트(현장) TEM TEM-STM 저온 전기 측정 시스템은 표준 형태의 투과형 전자현미경 시료 막대로, 스캐닝 프로브 제어 장치를 갖추고 프로브를 통해 개별 나노구조와 전기 측정을 동시에 조작하며, 시료의 결정 구조, 화학 성분, 원소 원자에 대한 동적 고해상도 종합 특성 분석이 가능합니다. 투과의 기능과 응용 분야를 크게 확장하여 투과 전자현미경의 기능과 응용 분야를 크게 확장합니다.": { en: "PicoFemto in-situ TEM TEM-STM low-temperature electrical system is a standard TEM holder with a scanning probe controller for simultaneous nano-manipulation and electrical measurement, together with dynamic high-resolution analysis.", zh: "PicoFemto 原位 TEM TEM-STM 低温电学系统为标准 TEM 样品杆，配备扫描探针控制装置，可同时进行纳米操控、电学测量及高分辨动态分析。" },
+  "PicoFemto in-situ TEM TEM-STM 광전 통합 측정 시스템은 표준 형태 투과형 전자 현미경 시료봉으로, 주사 프로브 제어 장치를 갖추고 프로브를 통해 개별 나노구조와 전기적 측정, 그리고 동시에 전기 측정을 조작합니다. 시료의 결정 구조, 화학 성분, 원소 원자에 대한 동적 고해상도 종합 특성화를 제공하여 기능과 응용을 크게 확장합니다 투과 영역 이로 인해 투과 전자현미경의 기능과 응용 분야가 크게 확장됩니다.": { en: "PicoFemto in-situ TEM TEM-STM photoelectric integrated system is a standard TEM holder with a scanning probe controller, enabling nano-manipulation together with electrical and photoelectric measurements.", zh: "PicoFemto 原位 TEM TEM-STM 光电一体化系统为标准 TEM 样品杆，配备扫描探针控制装置，可同时进行纳米操控、电学和光电测量。" },
+  "PicoFemto in-Situ TEM TEM-STM 통합 힘 측정 시스템은 TEM 시료봉의 표준 형태에 추가된 스캐닝 프로브 제어 장치로, 프로브를 통해 개별 나노구조와 전기적 측정을 조작할 수 있으며, 동시에 전기 측정도 수행할 수 있습니다. 시료의 결정 구조, 화학 성분, 원소 원자에 대한 동적 고해상도 종합 특성 분석이 가능합니다. TEM의 기능과 응용 분야를 크게 확장했습니다. 이로 인해 투과 전자현미경의 기능과 응용 분야가 크게 확장되었습니다.": { en: "PicoFemto in-situ TEM TEM-STM integrated force measurement system adds a scanning probe controller to a standard TEM holder, enabling nano-manipulation, electrical testing, and integrated force-related in-situ analysis.", zh: "PicoFemto 原位 TEM TEM-STM 力学一体化测量系统在标准 TEM 样品杆基础上加入扫描探针控制装置，可进行纳米操控、电学测试及力学相关原位分析。" },
+  "현장 TEM TEM-STM 전기 측정 시스템은 투과 전자현미경(TEM)과 주사 터널링 현미경(STM)의 기능을 통합한 고급 과학 연구 장비로, 나노 스케일에서 재료의 전기적 특성 연구를 위해 설계되었습니다. 이 시스템은 TEM 환경에서 현장 전기 측정, 구조 영상 및 기계적 조절의 조정 작동을 지원하며, 저차원 재료, 이종접합, 양자 소자, 인터페이스 현상과 같은 고급 주제 연구에 널리 사용되고 있습니다.": { en: "The in-situ TEM TEM-STM electrical measurement system combines TEM and STM capabilities for nano-scale electrical property research, supporting coordinated electrical measurement, imaging, and mechanical manipulation.", zh: "原位 TEM TEM-STM 电学测量系统融合 TEM 与 STM 功能，面向纳米尺度材料电学性质研究，支持电学测量、成像与机械操控协同进行。" },
+  "PicoFemto 현장 TEM MEMS 대기 가열 측정 시스템은 투과 전자현미경에서 대기와 고온 환경을 생성하며, 1 Bar 및 800 °C의 종단 간 관측 조건을 실현합니다. 이 시스템은 연구자들이 촉매 반응, 산화환원 반응, 저차원 재료 성장/합성, 다양한 부식 반응을 원자 규모에서 실시간으로 관찰할 수 있게 해주며, TEM을 정적 영상 도구에서 강력한 나노랩으로 업그레이드할 수 있게 합니다.": { en: "PicoFemto in-situ TEM MEMS atmosphere heating system creates gas and high-temperature environments inside the TEM, enabling up to 1 bar and 800°C for real-time atomic-scale observation.", zh: "PicoFemto 原位 TEM MEMS 气氛加热系统可在 TEM 内构建气体与高温环境，实现最高 1 bar、800°C 条件下的原子级实时观察。" },
+  "피코펨토 현장 TEM MEMS 액체 전기화학 측정 시스템은 액체 캡슐화를 용이하게 하는 새로운 O-링 보조 씰 설계를 특징으로 합니다. 실험에서는 샘플을 초박 질소 실리콘 필름으로 덮은 액체 셀 안에 밀봉하는데, 이 필름은 1기압을 견딜 수 있습니다. 칩 전극은 외부 회로에 연결되어 전자현미경 내에서 액체-전기화학 시험 환경을 구축합니다.": { en: "PicoFemto in-situ TEM MEMS liquid electrochemical system features an O-ring assisted seal for liquid encapsulation, enabling liquid electrochemical experiments inside the electron microscope.", zh: "PicoFemto 原位 TEM MEMS 液体电化学系统采用 O 形圈辅助密封设计，可在电子显微镜内实现液体电化学实验环境。" },
+  "피코펨토 현장 TEM MEMS 저온 전기 측정 시스템은 표준 MEMS 칩 샘플 로드에 통합된 극저온 제어 모듈로, 극저온 전기 측정 또는 전온 측정 기능을 구현합니다.": { en: "PicoFemto in-situ TEM MEMS low-temperature electrical system integrates cryogenic control into a standard MEMS-chip holder for cryogenic or full-temperature electrical measurements.", zh: "PicoFemto 原位 TEM MEMS 低温电学系统将低温控制模块集成到标准 MEMS 芯片样品杆中，可实现低温或全温区电学测量。" },
+  "PicoFemto 현장 TEM MEMS 가열 전기 측정 시스템, 투과 전자현미경은 고시간 해상도로 원자 수준의 공간 해상도를 얻을 수 있는 실험 도구입니다. 투과 전자현미경 현장 가열/전기 측정 시스템은 MEMS 마이크로 가열 칩과 표준 형태의 투과 전자현미경 샘플 막대 안에 장착된 전기 측정 칩으로 구성됩니다. 마이크로 가열 칩은 시료를 제어된 온도로 가열할 수 있고, 전기 측정 칩은 시료의 전기적 특성을 측정할 수 있습니다. 가열과 전기 측정 시점에 시료의 결정 구조, 화학 성분 및 원소 원자 상태를 동적이고 높은 해상도로 특성화할 수 있어 투과 전자현미경의 기능과 응용 분야가 크게 확장됩니다.": { en: "PicoFemto in-situ TEM MEMS heated electrical system combines MEMS heating chips and electrical measurement chips for dynamic structural and electrical characterization during heating.", zh: "PicoFemto 原位 TEM MEMS 加热电学系统将 MEMS 微加热芯片与电学测量芯片结合，可在加热过程中进行动态结构与电学表征。" },
+  "피코펨토 현장 TEM 신장 측정 시스템은 투과 전자현미경을 통한 재료 구조 변화를 현장 관찰과 함께 실온에서 재료에 인장력을 가할 수 있게 합니다. 이 시스템은 단일 경사진 신장 시료 막대, 신장 컨트롤러, 특수 신장 시료 운반 시트를 포함합니다. 응용 방향: 금속 재료, 나노재료, 박막 등의 기계적 변화 메커니즘을 연구합니다.": { en: "PicoFemto in-situ TEM stretching system applies tensile force at room temperature while observing structural changes in real time inside a TEM.", zh: "PicoFemto 原位 TEM 拉伸系统可在室温下对材料施加拉伸力，并同时在 TEM 中实时观察结构变化。" },
+  "피코펨토인 제자리 TEM 360° 수평 회전 측정 시스템은 β각 기울기와 360° 수평 회전을 모두 갖추고 있어 투과전자 현미경에서 다자유도, 고정밀 시료 회전을 가능하게 합니다.": { en: "PicoFemto in-situ TEM 360° horizontal rotation system provides β-tilt and full 360° horizontal rotation for multi-degree-of-freedom, high-precision specimen rotation in TEM.", zh: "PicoFemto 原位 TEM 360° 水平旋转系统同时具备 β 倾转和 360° 水平旋转能力，可实现高精度多自由度样品旋转。" },
+  "현장 TEM 냉동 측정 시스템은 재료 과학, 구조생물학, 나노기술과 같은 최첨단 분야를 위해 설계된 고정밀 저온 동적 관측 장치입니다. 이 시스템은 고해상도 투과 전자현미경(TEM)과 연동되어 초저온 조건에서 시료의 구조, 형태, 동적 진화를 실시간으로 현장에서 관찰할 수 있습니다. 저온 민감 시료의 미시적 거동을 분석하는 데 필수적인 연구 도구입니다.": { en: "The in-situ TEM cryogenic system is a high-precision low-temperature dynamic observation platform for advanced fields such as materials science, structural biology, and nanotechnology.", zh: "原位 TEM 冷冻系统是面向材料科学、结构生物学和纳米技术等前沿领域的高精度低温动态观察平台。" },
+  "피코펨토 현장 TEM 진공 전달 측정 시스템은 진공 챔버나 글러브 박스에서 투과 전자현미경으로 샘플을 이동할 수 있도록 수납식 극단을 갖추도록 설계되어 대기 환경에 영향을 받지 않습니다.": { en: "PicoFemto in-situ TEM vacuum transfer system allows samples to be transferred from a vacuum chamber or glove box into the TEM without atmospheric exposure.", zh: "PicoFemto 原位 TEM 真空转移系统可将样品从真空腔体或手套箱转移至 TEM，避免暴露于大气环境。" },
+  "PicoFemto 현장 TEM 다중 웰 측정 시스템, 다공 샘플 바는 연구자가 최대 세 개의 샘플을 투과 전자현미경에 동시에 배치할 수 있게 하여 투과 전자현미경 사용 효율을 크게 향상시킵니다. 이 제품은 각 샘플을 양방향으로 독립적으로 기울일 수 있는 이중 틸트 버전으로도 제공됩니다.": { en: "PicoFemto in-situ TEM multi-well system allows up to three samples to be mounted in the TEM simultaneously, greatly improving utilization efficiency.", zh: "PicoFemto 原位 TEM 多孔位系统可在 TEM 中同时安装最多三个样品，大幅提升设备使用效率。" },
+  "피코펨토 현장 TEM 고온 기계적 측정 시스템(정량적 힘 + 전기 + 3D 조작 + 가열)은 기계적 측정 모듈과 MEMS 칩 모듈을 동시에 통합하여 시료를 1000°C에서 가열하면서 정량적 기계적 측정을 수행할 수 있습니다. 이는 진정한 의미의 투과 전자현미경에서 고해상도 정량적 현장 기계 연구를 실현합니다. 기계식 센서 표시기.": { en: "PicoFemto in-situ TEM high-temperature mechanical system integrates quantitative force, electrical measurement, 3D manipulation, and heating for high-resolution in-situ mechanical studies.", zh: "PicoFemto 原位 TEM 高温机械系统集成定量力、电学测量、三维操控和加热功能，可进行高分辨原位力学研究。" },
+  "PicoFemto 현장 MEMS-TEM-STM 다중장 측정 시스템(비정량적 힘 + 전기 + 빛 + 가열)은 혁신적인 현장 투과 전자 현미경 실험 시스템으로, 연구자들이 투과 전자현미경에서 제어된 다장 환경(힘, 열, 빛, 전기 등)을 구축하여 다중 여기 하에서 재료나 장치 등의 현장 특성화를 달성할 수 있게 합니다.": { en: "PicoFemto in-situ MEMS-TEM-STM multi-field system integrates force, electricity, light, and heating to build a controlled multi-field environment for in-situ characterization.", zh: "PicoFemto 原位 MEMS-TEM-STM 多场系统集成力、电、光和加热条件，可构建受控多场环境以实现原位表征。" },
+  "피코펨투인-제자리 TEM 광전 특성 시험 시스템(비정량적 힘 + 전기 + 빛 + 3차원 조작)은 표준 TEM-STM 시료봉 내에 광섬유 장치를 통합하여 외부 분광기 또는 레이저와 함께 사용하여 광전자 측정 또는 CL 측정을 수행합니다.": { en: "PicoFemto in-situ TEM photoelectric property testing system integrates optical fibers into a standard TEM-STM holder for photoelectric or cathodoluminescence measurements.", zh: "PicoFemto 原位 TEM 光电性能测试系统在标准 TEM-STM 样品杆内集成光纤装置，可进行光电或阴极发光测量。" },
+  "피코펨토 현장 TEM 저온전기 시험 시스템(비정량적 힘 + 전기 + 극저온 + 3D 조작)은 표준 TEM-STM 시료봉 내에 극저온 환경 제어 장치를 통합하여, 투과 전자현미경에서 현장 냉동 전기 측정의 목적을 실현합니다.": { en: "PicoFemto in-situ TEM cryo-electrical testing system integrates cryogenic environment control into a standard TEM-STM holder for in-situ low-temperature electrical testing.", zh: "PicoFemto 原位 TEM 低温电学测试系统在标准 TEM-STM 样品杆内集成低温环境控制装置，实现原位低温电学测试。" },
+  "PicoFemto 현장 TEM 기계-전기 측정 시스템(정량적 힘 + 전기 + 3D 조작)은 표준 TEM-STM 샘플 로드 내에 나노 힘 센서를 통합하여 고정밀 기계 및 전기적 측정을 실현합니다.": { en: "PicoFemto in-situ TEM mechanical-electrical system integrates nano-force sensors into a standard TEM-STM holder for high-precision mechanical and electrical measurements.", zh: "PicoFemto 原位 TEM 机电耦合系统在标准 TEM-STM 样品杆内集成纳米力传感器，可实现高精度机械与电学测量。" },
+  "In-situ 실험 환경에서 시편의 구조 변화를 실시간으로 관찰할 수 있는 기본형 TEM/SEM 솔루션입니다.": { en: "Entry-level in-situ TEM/SEM solution for real-time observation of structural changes in samples.", zh: "可在原位实验环境下实时观察样品结构变化的基础型 TEM/SEM 解决方案。" },
+  "가열 조건에서 미세 구조 변화를 추적하기에 적합한 In-situ 분석 장비입니다.": { en: "An in-situ analysis system suitable for tracking microstructural changes under heating conditions.", zh: "适用于在加热条件下追踪微观结构变化的原位分析设备。" },
+  "인장 및 변형 시험 중 시편 반응을 정밀하게 확인할 수 있는 모델입니다.": { en: "A model suitable for precise observation of sample response during tensile and deformation tests.", zh: "适用于在拉伸及形变试验中精确观察样品响应的型号。" },
+  "냉각 조건에서 재료의 표면 및 내부 변화를 안정적으로 관찰할 수 있습니다.": { en: "Provides stable observation of surface and internal changes in materials under cooling conditions.", zh: "可在冷却条件下稳定观察材料表面与内部变化。" },
+  "배터리, 반도체, 금속 소재 분석에 적합한 범용 In-situ TEM/SEM 시스템입니다.": { en: "A versatile in-situ TEM/SEM system suitable for batteries, semiconductors, and metallic materials.", zh: "适用于电池、半导体及金属材料分析的通用型原位 TEM/SEM 系统。" },
+  "미세 구조의 시간에 따른 변화를 확인하기 위한 동적 분석용 장비입니다.": { en: "A dynamic analysis system for tracking time-dependent microstructural changes.", zh: "用于追踪微观结构随时间变化的动态分析设备。" },
+  "복합 소재의 계면 변화와 결함 발생을 관찰하기 좋은 In-situ 분석 모델입니다.": { en: "An in-situ model suitable for observing interfacial changes and defect formation in composite materials.", zh: "适用于观察复合材料界面变化及缺陷形成的原位分析型号。" },
+  "고배율 이미징과 실험 스테이지 연동이 가능한 연구용 솔루션입니다.": { en: "A research solution that supports high-magnification imaging and experimental stage integration.", zh: "支持高倍率成像及实验台联动的研究型解决方案。" },
+  "실험 중 샘플 반응을 직관적으로 파악할 수 있도록 설계된 In-situ 장비입니다.": { en: "An in-situ system designed for intuitive understanding of sample responses during experiments.", zh: "专为在实验过程中直观理解样品响应而设计的原位设备。" },
+  "열, 응력, 전기적 자극에 따른 구조 변화를 분석하는 데 적합한 모델입니다.": { en: "A model suitable for analyzing structural changes caused by heat, stress, and electrical stimulation.", zh: "适用于分析热、应力和电刺激引起结构变化的型号。" },
+  "재료 개발 및 불량 분석 과정에서 활용하기 좋은 TEM/SEM 응용 장비입니다.": { en: "A TEM/SEM application system useful for material development and failure analysis.", zh: "适用于材料开发与失效分析的 TEM/SEM 应用设备。" },
+  "연구실과 분석센터에서 폭넓게 사용할 수 있는 다목적 In-situ 솔루션입니다.": { en: "A multipurpose in-situ solution suitable for laboratories and analytical centers.", zh: "适用于实验室与分析中心的多用途原位解决方案。" },
+  "정밀 관찰과 반복 실험을 함께 고려한 안정형 TEM/SEM 장비입니다.": { en: "A stable TEM/SEM system designed for both precise observation and repeated experiments.", zh: "兼顾精密观察与重复实验需求的稳定型 TEM/SEM 设备。" },
+  "시편 반응을 실시간 이미지로 확보할 수 있는 고효율 분석 시스템입니다.": { en: "A high-efficiency analysis system capable of capturing sample responses in real time.", zh: "可实时获取样品响应的高效率分析系统。" },
+  "다양한 In-situ 액세서리와 연동 가능한 확장형 TEM/SEM 솔루션입니다.": { en: "An expandable TEM/SEM solution compatible with various in-situ accessories.", zh: "可兼容多种原位附件的扩展型 TEM/SEM 解决方案。" },
+  "나노 소재와 박막 샘플의 구조 변화를 세밀하게 관찰할 수 있는 장비입니다.": { en: "A system for detailed observation of structural changes in nanomaterials and thin-film samples.", zh: "可细致观察纳米材料与薄膜样品结构变化的设备。" },
+  "실험 조건 제어와 영상 확보를 동시에 중시하는 사용자에게 적합한 모델입니다.": { en: "A model suitable for users who require both experimental condition control and image acquisition.", zh: "适合同时重视实验条件控制与图像获取的用户。" },
+  "고급 응용 분석과 연구 데이터 확보를 위한 In-situ 전용 장비입니다.": { en: "A dedicated in-situ system for advanced application analysis and research data acquisition.", zh: "用于高级应用分析与研究数据获取的专用原位系统。" },
+  "정확한 구조 해석과 반응 추적을 지원하는 고신뢰성 TEM/SEM 시스템입니다.": { en: "A high-reliability TEM/SEM system that supports accurate structural interpretation and response tracking.", zh: "支持精确结构解析与响应追踪的高可靠性 TEM/SEM 系统。" },
+  "다양한 연구 환경에서 활용 가능한 통합형 In-situ TEM/SEM 솔루션입니다.": { en: "An integrated in-situ TEM/SEM solution applicable to diverse research environments.", zh: "适用于多种研究环境的一体化原位 TEM/SEM 解决方案。" },
+  "높은 안정성": { en: "High stability", zh: "高稳定性" },
+  "긴 수명": { en: "Long service life", zh: "长寿命" },
+  "초저유지보수 비용": { en: "Ultra-low maintenance cost", zh: "超低维护成本" },
+  "방대한 사용자 기반": { en: "Large user base", zh: "庞大用户基础" },
+  " 매우 넓은 기계적 측정 및 온도 제어 범위": { en: "Very wide mechanical measurement and temperature control range", zh: "极宽的力学测量与温控范围" },
+  "고안정성": { en: "High stability", zh: "高稳定性" },
+  "초장수명": { en: "Ultra-long service life", zh: "超长寿命" },
+  "여러 분야의 기계 연구": { en: "Mechanical research across multiple fields", zh: "多领域力学研究" },
+  "연속 온도 조절 가능, 높은 안정성": { en: "Continuous temperature control with high stability", zh: "可连续温控且稳定性高" },
+  "저온은 시료와 전기적 연구에 가해지는 응력을 실현할 수 있습니다": { en: "Low temperature enables stress-related sample and electrical studies", zh: "低温条件可实现样品与电学相关应力研究" },
+  " 양방향 광섬유의 사용은 CL 분광학, 광전 검출, 전기발광 분광법 및 기타 연구에 적용될 수 있습니다": { en: "Bidirectional optical fibers support CL spectroscopy, photoelectric detection, electroluminescence spectroscopy, and related studies", zh: "双向光纤可用于 CL 光谱、光电探测、电致发光光谱等研究" },
+  " 고확장성을 가진 광 적분 솔루션": { en: "Highly expandable optical integration solution", zh: "高扩展性的光学集成方案" },
+  "전자현미경의 원래 해상도를 보장하기 위한 높은 안정성": { en: "High stability to preserve original microscope resolution", zh: "高稳定性，保证原始分辨率" },
+  "전자 현미경의 원래 해상도를 보장하며, 구면 수차에서도 선명한 원자 이미지를 포착할 수 있습니다": { en: "Preserves original microscope resolution and captures clear atomic images", zh: "保持原始分辨率并获取清晰原子图像" },
+  "우수한 기동 안정성, 압전 세라믹 구동 모드로 고정밀 기동을 보장합니다.": { en: "Excellent actuation stability with piezo drive", zh: "优异的驱动稳定性，采用压电驱动" },
+  "힘과 전기 통합 솔루션, 기계적 및 전기 구성으로 대부분의 시험 요구를 충족합니다": { en: "Integrated force and electrical solution for most test needs", zh: "力学与电学一体化方案，满足大部分测试需求" },
+  "조작이 쉽고, 친숙": { en: "Easy and user-friendly operation", zh: "操作简便，易于上手" },
+  "": { en: "", zh: "" },
+  "TEM 진공과 호환": { en: "Compatible with TEM vacuum", zh: "兼容 TEM 真空环境" },
+  "최소 100 nm 액체 전지 스페이서 두께": { en: "Minimum 100 nm liquid-cell spacer thickness", zh: "液体池最小间隔厚度 100 nm" },
+  "전압 출력 최대 ± 200 V, 최소 해상도 ± 100 nV": { en: "Voltage output up to ±200 V; minimum resolution ±100 nV", zh: "电压输出最高 ±200 V，最小分辨率 ±100 nV" },
+  "정전압 또는 일정 전류 모드": { en: "Constant-voltage or constant-current mode", zh: "恒压或恒流模式" },
+  "스트레인 분석": { en: "Strain analysis", zh: "应变分析" },
+  "구조 변화 분석": { en: "Structural-change analysis", zh: "结构变化分析" },
+  "정밀 측정": { en: "Precision measurement", zh: "精密测量" },
+  "고성능 분석": { en: "High-performance analysis", zh: "高性能分析" },
+  "열팽창 분석": { en: "Thermal-expansion analysis", zh: "热膨胀分析" },
+  "온도 제어": { en: "Temperature control", zh: "温度控制" },
+  "구조 안정성": { en: "Structural stability", zh: "结构稳定性" },
+  "정밀 데이터": { en: "Precision data", zh: "精确数据" },
+  "전압 제어 분석": { en: "Voltage-control analysis", zh: "电压控制分析" },
+  "정밀 전기 분석": { en: "Precision electrical analysis", zh: "精密电学分析" },
+  "고해상도": { en: "High resolution", zh: "高分辨率" },
+  "연구 효율": { en: "Research efficiency", zh: "研究效率" },
+  "자기장 분석": { en: "Magnetic-field analysis", zh: "磁场分析" },
+  "데이터 안정성": { en: "Data stability", zh: "数据稳定性" },
+  "표면 반응 분석": { en: "Surface-reaction analysis", zh: "表面反应分析" },
+  "실시간 분석": { en: "Real-time analysis", zh: "实时分析" },
+  "연구 활용": { en: "Research use", zh: "研究应用" },
+  "배터리 분석": { en: "Battery analysis", zh: "电池分析" },
+  "충방전 분석": { en: "Charge/discharge analysis", zh: "充放电分析" },
+  "고성능": { en: "High performance", zh: "高性能" },
+  "반도체 분석": { en: "Semiconductor analysis", zh: "半导体分析" },
+  "미세 구조 분석": { en: "Microstructure analysis", zh: "微观结构分析" },
+  "고정밀": { en: "High precision", zh: "高精度" },
+  "연구 최적화": { en: "Optimized for research", zh: "研究优化" },
+  "촉매 분석": { en: "Catalyst analysis", zh: "催化分析" },
+  "반응 분석": { en: "Reaction analysis", zh: "反应分析" },
+  "데이터 신뢰성": { en: "Data reliability", zh: "数据可靠性" },
+  "폴리머 분석": { en: "Polymer analysis", zh: "聚合物分析" },
+  "구조 분석": { en: "Structural analysis", zh: "结构分析" },
+  "3D 분석": { en: "3D analysis", zh: "三维分析" },
+  "토모그래피": { en: "Tomography", zh: "断层成像" },
+  "데이터 정확성": { en: "Data accuracy", zh: "数据准确性" },
+  "생체 샘플 분석": { en: "Biological sample analysis", zh: "生物样品分析" },
+  "고정밀 분석": { en: "High-precision analysis", zh: "高精度分析" },
+  "맞춤형 분석": { en: "Custom analysis", zh: "定制分析" },
+  "다양한 환경": { en: "Various environments", zh: "多种环境" },
+  "확장성": { en: "Expandability", zh: "扩展性" },
+};
+
+
 type Category = {
   slug: string;
   label: string;
@@ -144,6 +266,12 @@ const translations: Record<string, { en: string; zh: string }> = {
   "전자현미경 및 분석": { en: "Electron Microscopy & Analysis", zh: "电子显微镜与分析" },
   "장비 전문 기업": { en: "Equipment Specialists", zh: "设备专业企业" },
   "정밀관찰, 재료분석, 품질평가를 위한 전자현미경 및 분석장비 솔루션을 제공합니다.": { en: "We provide electron microscopy and analytical equipment solutions for precision observation, material analysis, and quality evaluation.", zh: "我们提供用于精密观察、材料分析与品质评估的电子显微镜及分析设备解决方案。" },
+  "바로 보러가기": { en: "View Products", zh: "立即查看" },
+"문의하기": { en: "Contact Us", zh: "联系我们" },
+"주사전자현미경": { en: "Scanning Electron Microscope", zh: "扫描电子显微镜" },
+"3개의 Table Top SEM, 1개의 Normal SEM 제품 라인업": { en: "Lineup of 3 Table Top SEMs and 1 Normal SEM", zh: "3款台式SEM和1款普通SEM产品阵容" },
+"In-situ 분석 및 특수 응용을 위한 TEM/SEM 솔루션 라인업": { en: "TEM/SEM solution lineup for in-situ analysis and special applications", zh: "用于原位分析及特殊应用的TEM/SEM解决方案产品线" },
+"제품 소개": { en: "Products", zh: "产品介绍" },
   "전체 보기": { en: "View All", zh: "查看全部" },
   "선택한 카테고리의 제품을 한눈에 확인하실 수 있습니다.": { en: "You can browse products in the selected category at a glance.", zh: "您可以一目了然地查看所选分类中的产品。" },
   "장비별 상세 보기로 이동해 주요 특징과 구성을 확인해보세요.": { en: "Open the detail page to review key features and configuration.", zh: "进入详情页即可查看主要特点与配置。" },
@@ -191,13 +319,42 @@ const translations: Record<string, { en: string; zh: string }> = {
   "ADDR": { en: "ADDR", zh: "地址" },
   "TEL": { en: "TEL", zh: "电话" },
   "E-MAIL": { en: "E-MAIL", zh: "电子邮箱" },
+  "Ion Coating 전 / 후 비교": { en: "Ion Coating Before / After", zh: "离子镀膜前 / 后对比" },
+"동일 이미지를 기반으로 코팅 전 느낌과 코팅 후 결과를 직관적으로 비교할 수 있습니다.": {
+  en: "Compare the appearance before coating and the result after coating based on the same image.",
+  zh: "基于同一图像，可直观比较镀膜前状态与镀膜后结果。"
+},
+"BEFORE / AFTER COMPARISON": { en: "BEFORE / AFTER COMPARISON", zh: "前后对比" },
+"BEFORE (No Coating)": { en: "BEFORE (No Coating)", zh: "镀膜前" },
+"AFTER (Ion Coating)": { en: "AFTER (Ion Coating)", zh: "镀膜后" },
 };
 
-function trText(text: string, lang: Lang): string {
+function trText(text: string, lang: "ko" | "en" | "zh") {
   if (lang === "ko") return text;
+
+  // 1. exact TEM 먼저
+  const exact = exactTemTranslations[text];
+  if (exact) return lang === "en" ? exact.en : exact.zh;
+
+  // 2. 일반 translations
   const item = translations[text];
-  if (!item) return text;
-  return lang === "en" ? item.en : item.zh;
+  if (item) return lang === "en" ? item.en : item.zh;
+
+  // 🔥 3. 영어 → 중국어 강제 변환
+  if (lang === "zh") {
+    const enToZh: Record<string, string> = {
+      "TEM-STM Integrated Force": "TEM-STM 力学一体化系统",
+      "TEM-STM Electrical": "TEM-STM 电学测量系统",
+      "MEMS Atmosphere Heating": "MEMS 气氛加热系统",
+      "MEMS Liquid Electrochemical": "MEMS 液体电化学系统",
+      "Stretching": "拉伸测试系统",
+      "360° Horizontal Rotating": "360° 水平旋转系统",
+    };
+
+    if (enToZh[text]) return enToZh[text];
+  }
+
+  return text;
 }
 
 const categories: Category[] = [
@@ -583,6 +740,145 @@ const temFeatures = [
   ["생체 샘플 분석", "고정밀 분석", "데이터 안정성", "연구 최적화"],
   ["맞춤형 분석", "다양한 환경", "고성능", "확장성"],
 ];
+
+const temDescriptionsEn = [
+  "The PicoFemto in-situ MEMS-TEM-STM multi-field measurement system enables researchers to build a controlled multi-field environment inside a TEM for in-situ characterization of materials or devices under multiple excitations.",
+  "The PicoFemto in-situ TEM high-temperature mechanics system integrates a mechanical measurement module and MEMS chip module, enabling quantitative mechanical measurement while heating samples up to 1000 °C.",
+  "The PicoFemto in-situ TEM-STM low-temperature electrical measurement system is a standard TEM holder equipped with scanning probe control for simultaneous nanostructure manipulation and electrical measurement.",
+  "The PicoFemto in-situ TEM-STM photoelectric integrated measurement system is a standard TEM holder equipped with probe control, enabling simultaneous nanostructure manipulation and photoelectric/electrical measurement.",
+  "The PicoFemto in-situ TEM-STM integrated force measurement system enables simultaneous nanostructure manipulation, force measurement, and electrical testing with high-resolution in-situ characterization.",
+  "The in-situ TEM-STM electrical measurement system integrates TEM and STM capabilities for nano-scale electrical property research with synchronized structural imaging and electrical testing.",
+  "The PicoFemto in-situ TEM MEMS atmosphere heating system creates controlled gas and high-temperature environments inside TEM, enabling real-time atomic-scale observation of reactions and growth processes.",
+  "The PicoFemto in-situ TEM MEMS liquid electrochemical system features a liquid-cell design with O-ring-assisted sealing, enabling liquid electrochemical experiments inside the electron microscope.",
+  "The PicoFemto in-situ TEM MEMS low-temperature electrical system integrates a cryogenic control module into a standard MEMS chip holder for low-temperature electrical measurement.",
+  "The PicoFemto in-situ TEM MEMS heated electrical system combines micro-heating and electrical measurement chips, enabling dynamic high-resolution characterization during heating and electrical testing.",
+  "The PicoFemto in-situ TEM stretching system applies tensile force to materials at room temperature while observing structural changes inside the TEM.",
+  "The PicoFemto in-situ TEM 360° horizontal rotating system supports both beta tilt and full horizontal rotation for multi-degree, high-precision sample rotation inside TEM.",
+  "The in-situ TEM cryogenic measurement system is a high-precision low-temperature observation device for real-time structural and dynamic analysis of cryo-sensitive samples.",
+  "The PicoFemto in-situ TEM vacuum transfer system enables sample transfer from vacuum chambers or glove boxes to the TEM without atmospheric exposure.",
+  "The PicoFemto in-situ TEM multi-well system allows up to three samples to be loaded simultaneously, greatly improving TEM efficiency.",
+  "The PicoFemto in-situ TEM high-temperature mechanical system integrates quantitative force, electrical measurement, 3D manipulation, and heating for high-resolution mechanical studies inside TEM.",
+  "The PicoFemto in-situ MEMS-TEM-STM multi-field system combines force, electricity, light, and heating to build a controlled multi-field environment inside the TEM.",
+  "The PicoFemto in-situ TEM photoelectric property testing system integrates optical fiber devices into a TEM-STM holder for photoelectric and cathodoluminescence measurements.",
+  "The PicoFemto in-situ TEM cryo-electrical testing system integrates cryogenic environment control into a TEM-STM holder for in-situ low-temperature electrical measurement.",
+  "The PicoFemto in-situ TEM mechanical-electrical system integrates nano-force sensing into a TEM-STM sample holder for high-precision mechanical and electrical measurement."
+];
+
+const temDescriptionsZh = [
+  "PicoFemto 原位 MEMS-TEM-STM 多场测量系统可在 TEM 内构建受控多场环境，实现多激励条件下对材料或器件的原位表征。",
+  "PicoFemto 原位 TEM 高温力学测量系统集成机械测量模块与 MEMS 芯片模块，可在样品加热至 1000°C 时进行定量力学测量。",
+  "PicoFemto 原位 TEM-STM 低温电学测量系统为标准 TEM 样品杆，配备扫描探针控制装置，可实现纳米结构操控与电学测量。",
+  "PicoFemto 原位 TEM-STM 光电一体化测量系统为标准 TEM 样品杆，可同时进行纳米结构操控以及光电/电学测试。",
+  "PicoFemto 原位 TEM-STM 力学一体化系统支持纳米结构操控、力学测量与电学测试，并可进行高分辨原位表征。",
+  "原位 TEM-STM 电学测量系统融合 TEM 与 STM 功能，可进行纳米尺度电学特性研究，并同步进行结构成像与电学测试。",
+  "PicoFemto 原位 TEM MEMS 气氛加热系统可在 TEM 中建立可控气氛与高温环境，实现原子尺度反应与生长过程的实时观察。",
+  "PicoFemto 原位 TEM MEMS 液体电化学系统采用 O 型圈辅助密封液体池结构，可在电子显微镜内进行液体电化学实验。",
+  "PicoFemto 原位 TEM MEMS 低温电学系统将低温控制模块集成到标准 MEMS 芯片样品杆中，实现低温电学测量。",
+  "PicoFemto 原位 TEM MEMS 加热电学系统结合微加热芯片与电学测量芯片，可在加热和电测过程中进行动态高分辨表征。",
+  "PicoFemto 原位 TEM 拉伸系统可在室温下对材料施加拉伸力，并在 TEM 内同步观察结构变化。",
+  "PicoFemto 原位 TEM 360° 水平旋转系统同时支持 β 倾转与 360° 水平旋转，实现 TEM 内多自由度高精度样品旋转。",
+  "原位 TEM 低温冷冻测量系统是一种高精度低温观察装置，可对低温敏感样品进行实时结构与动态演化分析。",
+  "PicoFemto 原位 TEM 真空转移系统支持样品从真空腔体或手套箱转移至 TEM，全程避免暴露于大气环境。",
+  "PicoFemto 原位 TEM 多孔位系统可同时装载最多三个样品，显著提升 TEM 使用效率。",
+  "PicoFemto 原位 TEM 高温机械系统集成定量力、 电学、三维操控和加热功能，可在 TEM 内进行高分辨机械研究。",
+  "PicoFemto 原位 MEMS-TEM-STM 多场系统可在 TEM 内构建力、热、光、电等多场耦合环境，实现多激励原位表征。",
+  "PicoFemto 原位 TEM 光电性能测试系统将光纤装置集成到 TEM-STM 样品杆中，可进行光电与阴极发光测量。",
+  "PicoFemto 原位 TEM 低温电学测试系统将低温环境控制集成到 TEM-STM 样品杆中，实现原位低温电学测试。",
+  "PicoFemto 原位 TEM 机电测量系统将纳米力传感器集成到 TEM-STM 样品杆中，实现高精度机电耦合测量。"
+];
+
+const temBriefDescriptionsEn = [
+  "A basic TEM/SEM solution for real-time observation of structural changes in samples during in-situ experiments.",
+  "An in-situ analysis system suitable for tracking microstructural changes under heating conditions.",
+  "A model that allows precise observation of sample response during tensile and deformation testing.",
+  "Enables stable observation of surface and internal changes in materials under cooling conditions.",
+  "A versatile in-situ TEM/SEM system suitable for batteries, semiconductors, and metallic materials.",
+  "A dynamic analysis system for monitoring time-dependent microstructural changes.",
+  "An in-situ analysis model well suited for observing interface changes and defect formation in composite materials.",
+  "A research solution that supports high-magnification imaging and integration with experimental stages.",
+  "An in-situ system designed for intuitive understanding of sample response during experiments.",
+  "Suitable for analyzing structural changes caused by heat, stress, and electrical stimulation.",
+  "A TEM/SEM application system useful for material development and failure analysis.",
+  "A multipurpose in-situ solution suitable for broad use in laboratories and analytical centers.",
+  "A stable TEM/SEM system designed for both precise observation and repetitive experiments.",
+  "A high-efficiency analysis system capable of capturing sample response in real time.",
+  "An expandable TEM/SEM solution compatible with various in-situ accessories.",
+  "A system for detailed observation of structural changes in nanomaterials and thin films.",
+  "Ideal for users who need both experimental condition control and image acquisition.",
+  "A dedicated in-situ system for advanced application analysis and research data acquisition.",
+  "A highly reliable TEM/SEM system that supports accurate structural interpretation and response tracking.",
+  "An integrated in-situ TEM/SEM solution usable across various research environments."
+];
+
+const temBriefDescriptionsZh = [
+  "可在原位实验环境下实时观察样品结构变化的基础型 TEM/SEM 解决方案。",
+  "适合在加热条件下追踪微观结构变化的原位分析设备。",
+  "可在拉伸及变形试验中精确观察样品反应的型号。",
+  "可在冷却条件下稳定观察材料表面及内部变化。",
+  "适用于电池、半导体及金属材料分析的通用型原位 TEM/SEM 系统。",
+  "用于观察微观结构随时间变化的动态分析设备。",
+  "适用于观察复合材料界面变化及缺陷产生的原位分析型号。",
+  "支持高倍率成像并可联动实验台的研究型解决方案。",
+  "专为在实验过程中直观掌握样品反应而设计的原位设备。",
+  "适用于分析热、应力及电刺激引起结构变化的型号。",
+  "适用于材料开发和失效分析的 TEM/SEM 应用设备。",
+  "可广泛应用于实验室和分析中心的多用途原位解决方案。",
+  "兼顾精密观察与重复实验需求的稳定型 TEM/SEM 设备。",
+  "可实时获取样品反应图像的高效率分析系统。",
+  "可与多种原位附件联动的扩展型 TEM/SEM 解决方案。",
+  "可细致观察纳米材料与薄膜样品结构变化的设备。",
+  "适合同时重视实验条件控制与图像获取的用户。",
+  "用于高级应用分析与研究数据获取的专用原位设备。",
+  "支持精确结构解析与反应追踪的高可靠性 TEM/SEM 系统。",
+  "可适用于多种研究环境的一体化原位 TEM/SEM 解决方案。"
+];
+
+const temFeaturesEn = [
+  ["High stability", "Long lifetime", "Ultra-low maintenance cost", "Large user base"],
+  ["Wide mechanical measurement and temperature-control range", "High stability", "Ultra-long lifetime", "Mechanical research for multiple fields"],
+  ["Continuous temperature control", "Low-temperature electrical/stress testing", "High stability", "Ultra-long lifetime"],
+  ["Bidirectional optical fiber for CL/photoelectric/electroluminescence studies", "Highly expandable optical integration solution", "High stability to preserve original TEM resolution", "Ultra-long lifetime"],
+  ["Preserves original TEM resolution even with aberration correction", "Excellent motion stability with piezo-ceramic drive", "Integrated force and electrical solution", "Easy and familiar operation"],
+  ["Electrical property measurement", "Nano-scale manipulation", "High resolution", "Research efficiency"],
+  ["Gas-environment analysis", "High-temperature reaction observation", "Real-time analysis", "Advanced research"],
+  ["TEM vacuum compatible", "Minimum 100 nm liquid cell spacer thickness", "Voltage output up to ±200 V with ±100 nV resolution", "Constant voltage or constant current mode"],
+  ["Strain analysis", "Structural change analysis", "Precise measurement", "High-performance analysis"],
+  ["Thermal expansion analysis", "Temperature control", "Structural stability", "Precision data"],
+  ["Voltage-controlled analysis", "Precision electrical analysis", "High resolution", "Research efficiency"],
+  ["Magnetic field analysis", "Precision measurement", "High-performance analysis", "Data stability"],
+  ["Surface reaction analysis", "Real-time analysis", "High resolution", "Research application"],
+  ["Battery analysis", "Charge/discharge analysis", "Precision data", "High performance"],
+  ["Semiconductor analysis", "Microstructure analysis", "High precision", "Research optimized"],
+  ["Catalyst analysis", "Reaction analysis", "High resolution", "Reliable data"],
+  ["Polymer analysis", "Structure analysis", "Precision data", "Research efficiency"],
+  ["3D analysis", "Tomography", "High resolution", "Data accuracy"],
+  ["Biological sample analysis", "High-precision analysis", "Data stability", "Research optimized"],
+  ["Custom analysis", "Various environments", "High performance", "Expandability"]
+];
+
+const temFeaturesZh = [
+  ["高稳定性", "长寿命", "超低维护成本", "庞大用户基础"],
+  ["宽范围力学测量与温控", "高稳定性", "超长寿命", "多领域力学研究"],
+  ["连续温度控制", "低温电学/应力研究", "高稳定性", "超长寿命"],
+  ["双向光纤支持 CL/光电/电致发光研究", "高扩展性光学集成方案", "保持原始 TEM 分辨率的高稳定性", "超长寿命"],
+  ["保持原始 TEM 分辨率并获取清晰原子像", "压电陶瓷驱动带来优异运动稳定性", "力学与电学一体化方案", "操作简便、易上手"],
+  ["电学特性测量", "纳米操控", "高分辨率", "研究效率"],
+  ["气氛环境分析", "高温反应观察", "实时分析", "先进研究"],
+  ["兼容 TEM 真空环境", "最小 100 nm 液体池隔片厚度", "电压输出最高 ±200 V，分辨率 ±100 nV", "恒压或恒流模式"],
+  ["应变分析", "结构变化分析", "精密测量", "高性能分析"],
+  ["热膨胀分析", "温度控制", "结构稳定性", "精密数据"],
+  ["电压控制分析", "精密电学分析", "高分辨率", "研究效率"],
+  ["磁场分析", "精密测量", "高性能分析", "数据稳定性"],
+  ["表面反应分析", "实时分析", "高分辨率", "研究应用"],
+  ["电池分析", "充放电分析", "精密数据", "高性能"],
+  ["半导体分析", "微结构分析", "高精度", "研究优化"],
+  ["催化剂分析", "反应分析", "高分辨率", "数据可靠性"],
+  ["聚合物分析", "结构分析", "精密数据", "研究效率"],
+  ["3D 分析", "断层成像", "高分辨率", "数据准确性"],
+  ["生物样品分析", "高精度分析", "数据稳定性", "研究优化"],
+  ["定制分析", "多种环境", "高性能", "扩展性"]
+];
+
 
 
 // 👇 기존 코드 그대로 이어짐
@@ -1266,14 +1562,19 @@ function BeforeAfterSEM({ afterSrc, title, lang }: { afterSrc: string; title: st
           }}
         />
         <div className="absolute left-4 top-4 rounded-full bg-black/60 px-4 py-1 text-[12px] text-white">
-          {trText("BEFORE (No Coating)", lang)}
+          {lang === "ko" ? "코팅 전" : lang === "en" ? "BEFORE" : "镀膜前"}
         </div>
       </div>
 
       <div className="group relative overflow-hidden rounded-[16px] border border-[#e2e8f0] bg-black shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
-        <ClickZoomImage src={afterSrc} alt={`${title} after`} imageClassName="h-[300px] w-full object-cover" lang={lang} />
+        <ClickZoomImage
+          src={afterSrc}
+          alt={`${title} after`}
+          imageClassName="h-[300px] w-full object-cover"
+          lang={lang}
+        />
         <div className="absolute left-4 top-4 rounded-full bg-[#1457b5] px-4 py-1 text-[12px] text-white">
-          {trText("AFTER (Ion Coating)", lang)}
+          {lang === "ko" ? "코팅 후" : lang === "en" ? "AFTER" : "镀膜后"}
         </div>
       </div>
     </div>
@@ -1701,14 +2002,19 @@ function ProductDetailPage({ product, lang, setLang }: { product: Product; lang:
           {product.category === "ion-coater" && product.gallery.length > 0 ? (
             <section className="rounded-[24px] border border-[#e5e7eb] bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)] lg:p-10">
               <div className="text-[13px] font-semibold tracking-[0.12em] text-[#1457b5]">{trText("BEFORE / AFTER COMPARISON", lang)}</div>
-              <h2 className="mt-3 text-[28px] font-bold tracking-[-0.03em] text-[#111]">{trText("Ion Coating 전 / 후 비교", lang)}</h2>
-              <p className="mt-3 text-[15px] leading-7 text-[#66707d]">
-                {trText("동일 이미지를 기반으로 코팅 전 느낌과 코팅 후 결과를 직관적으로 비교할 수 있습니다.", lang)}
-              </p>
+              <h2 className="...">{trText("Ion Coating 전 / 후 비교", lang)}</h2>
+<p className="...">
+  {trText("동일 이미지를 기반으로 코팅 전 느낌과 코팅 후 결과를 직관적으로 비교할 수 있습니다.", lang)}
+</p>
 
               <div className="mt-8 space-y-8">
                 {product.gallery.slice(0, 10).map((item, idx) => (
-                  <BeforeAfterSEM key={`${trText(item.title, lang)}-${idx}`} afterSrc={item.image} title={trText(item.title, lang)} />
+                  <BeforeAfterSEM
+  key={`${trText(item.title, lang)}-${idx}`}
+  afterSrc={item.image}
+  title={trText(item.title, lang)}
+  lang={lang}
+/>
                 ))}
               </div>
             </section>
