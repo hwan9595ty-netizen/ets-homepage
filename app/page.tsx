@@ -313,14 +313,8 @@ const translations: Record<string, { en: string; zh: string }> = {
   "ADDR": { en: "ADDR", zh: "地址" },
   "TEL": { en: "TEL", zh: "电话" },
   "E-MAIL": { en: "E-MAIL", zh: "电子邮箱" },
-  "Ion Coating 전 / 후 비교": { en: "Ion Coating Before / After", zh: "离子镀膜前 / 后对比" },
-"동일 이미지를 기반으로 코팅 전 느낌과 코팅 후 결과를 직관적으로 비교할 수 있습니다.": {
-  en: "Compare the appearance before coating and the result after coating based on the same image.",
-  zh: "基于同一图像，可直观比较镀膜前状态与镀膜后结果。"
-},
-"BEFORE / AFTER COMPARISON": { en: "BEFORE / AFTER COMPARISON", zh: "前后对比" },
-"BEFORE (No Coating)": { en: "BEFORE (No Coating)", zh: "镀膜前" },
-"AFTER (Ion Coating)": { en: "AFTER (Ion Coating)", zh: "镀膜后" },
+  
+
 };
 
 function trText(text: string, lang: "ko" | "en" | "zh") {
