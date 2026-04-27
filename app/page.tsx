@@ -197,6 +197,10 @@ const heroImages = ["/hero/1.jpg", "/hero/2.png", "/hero/3.jpg", "/hero/4.png"];
 type Lang = "ko" | "en" | "zh";
 
 const translations: Record<string, { en: string; zh: string }> = {
+  "__LONG__": {
+  en: "Advanced analysis solution",
+  zh: "高级分析解决方案"
+},
   "제품소개": { en: "Products", zh: "产品介绍" },
   "회사소개": { en: "Company", zh: "公司介绍" },
   "전체": { en: "All", zh: "全部" },
@@ -266,6 +270,12 @@ const translations: Record<string, { en: string; zh: string }> = {
   "전자현미경 및 분석": { en: "Electron Microscopy & Analysis", zh: "电子显微镜与分析" },
   "장비 전문 기업": { en: "Equipment Specialists", zh: "设备专业企业" },
   "정밀관찰, 재료분석, 품질평가를 위한 전자현미경 및 분석장비 솔루션을 제공합니다.": { en: "We provide electron microscopy and analytical equipment solutions for precision observation, material analysis, and quality evaluation.", zh: "我们提供用于精密观察、材料分析与品质评估的电子显微镜及分析设备解决方案。" },
+  "바로 보러가기": { en: "View Products", zh: "立即查看" },
+"문의하기": { en: "Contact Us", zh: "联系我们" },
+"주사전자현미경": { en: "Scanning Electron Microscope", zh: "扫描电子显微镜" },
+"3개의 Table Top SEM, 1개의 Normal SEM 제품 라인업": { en: "Lineup of 3 Table Top SEMs and 1 Normal SEM", zh: "3款台式SEM和1款普通SEM产品阵容" },
+"In-situ 분석 및 특수 응용을 위한 TEM/SEM 솔루션 라인업": { en: "TEM/SEM solution lineup for in-situ analysis and special applications", zh: "用于原位分析及特殊应用的TEM/SEM解决方案产品线" },
+"제품 소개": { en: "Products", zh: "产品介绍" },
   "전체 보기": { en: "View All", zh: "查看全部" },
   "선택한 카테고리의 제품을 한눈에 확인하실 수 있습니다.": { en: "You can browse products in the selected category at a glance.", zh: "您可以一目了然地查看所选分类中的产品。" },
   "장비별 상세 보기로 이동해 주요 특징과 구성을 확인해보세요.": { en: "Open the detail page to review key features and configuration.", zh: "进入详情页即可查看主要特点与配置。" },
@@ -313,33 +323,38 @@ const translations: Record<string, { en: string; zh: string }> = {
   "ADDR": { en: "ADDR", zh: "地址" },
   "TEL": { en: "TEL", zh: "电话" },
   "E-MAIL": { en: "E-MAIL", zh: "电子邮箱" },
-  
-
+  "Ion Coating 전 / 후 비교": { en: "Ion Coating Before / After", zh: "离子镀膜前 / 后对比" },
+"동일 이미지를 기반으로 코팅 전 느낌과 코팅 후 결과를 직관적으로 비교할 수 있습니다.": {
+  en: "Compare the appearance before coating and the result after coating based on the same image.",
+  zh: "基于同一图像，可直观比较镀膜前状态与镀膜后结果。"
+},
+"BEFORE / AFTER COMPARISON": { en: "BEFORE / AFTER COMPARISON", zh: "前后对比" },
+"BEFORE (No Coating)": { en: "BEFORE (No Coating)", zh: "镀膜前" },
+"AFTER (Ion Coating)": { en: "AFTER (Ion Coating)", zh: "镀膜后" },
 };
+function normalizeText(text: string) {
+  return text
+    .replace(/\s+/g, " ")
+    .replace(/[‐-‒–—]/g, "-")
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .trim();
+}
 
 function trText(text: string, lang: "ko" | "en" | "zh") {
   if (lang === "ko") return text;
 
-  // 1. exact TEM 먼저
-  const exact = exactTemTranslations[text];
-  if (exact) return lang === "en" ? exact.en : exact.zh;
+  const normalizedInput = normalizeText(text);
 
-  // 2. 일반 translations
-  const item = translations[text];
-  if (item) return lang === "en" ? item.en : item.zh;
+  for (const [key, value] of Object.entries(translations)) {
+    if (normalizeText(key) === normalizedInput) {
+      return lang === "en" ? value.en : value.zh;
+    }
+  }
 
-  // 🔥 3. 영어 → 중국어 강제 변환
-  if (lang === "zh") {
-    const enToZh: Record<string, string> = {
-      "TEM-STM Integrated Force": "TEM-STM 力学一体化系统",
-      "TEM-STM Electrical": "TEM-STM 电学测量系统",
-      "MEMS Atmosphere Heating": "MEMS 气氛加热系统",
-      "MEMS Liquid Electrochemical": "MEMS 液体电化学系统",
-      "Stretching": "拉伸测试系统",
-      "360° Horizontal Rotating": "360° 水平旋转系统",
-    };
-
-    if (enToZh[text]) return enToZh[text];
+  if (normalizedInput.length > 40) {
+    const fallback = translations["__LONG__"];
+    return lang === "en" ? fallback.en : fallback.zh;
   }
 
   return text;
