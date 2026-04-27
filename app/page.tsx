@@ -630,24 +630,34 @@ const temBriefDescriptions = [
   "다양한 연구 환경에서 활용 가능한 통합형 In-situ TEM/SEM 솔루션입니다.",
 ];
 
-const temProducts: Product[] = Array.from({ length: 20 }, (_, i) =>
-  makeProduct({
-    slug: `tem-${String(i + 1).padStart(2, "0")}`,
-    category: "tem",
-    title: `TEM-${String(i + 1).padStart(2, "0")}`,
-    categoryLabel: "TEM",
-    type: "TEM",
-    image: "/products/im.png",
-    subtitle: "TRANSMISSION ELECTRON MICROSCOPE",
-    description: `투과전자현미경 기반의 고해상도 분석 장비 ${i + 1}`,
-    overview: `나노 수준 구조 분석과 내부 단면 분석에 적합한 TEM 장비 ${i + 1}번 모델입니다.`,
-    briefInfo: temBriefDescriptions[i],
-    features: ["고해상도 분석", "나노 구조 관찰", "정밀 데이터 확보", "연구용 최적화"],
-    useOptions: false,
-    useSoftware: false,
-    useGallery: false,
-  })
-);
+const temDescriptions = [
+  "MEMS 기반 다중 물리장 환경에서 나노소재를 분석할 수 있는 시스템",
+  "고온 환경에서 재료의 기계적 특성을 실시간 분석하는 시스템",
+  "저온 환경에서 전기적 특성을 정밀 측정하는 TEM 시스템",
+  "광전 특성을 동시에 분석할 수 있는 통합 TEM 시스템",
+  "힘 측정과 전기적 분석을 동시에 수행하는 TEM 솔루션",
+  "전기적 특성 분석에 최적화된 TEM 시스템",
+  "가스 환경에서 시료를 가열하며 분석 가능한 시스템",
+  "액체 환경에서 전기화학 반응을 관찰하는 TEM 솔루션",
+  "저온 환경에서 안정적인 전기적 측정을 수행하는 시스템",
+  "가열 상태에서 전기적 특성을 분석하는 TEM 장비",
+  "시료를 늘리면서 물성을 분석하는 TEM 시스템",
+  "360도 회전하며 구조를 관찰하는 분석 시스템",
+  "극저온 상태에서 시료를 분석하는 Cryo TEM 시스템",
+  "진공 상태로 시료를 이동시키는 전용 시스템",
+  "여러 시료를 동시에 분석할 수 있는 다중 샘플 시스템",
+  "고온에서 기계적 변화를 분석하는 TEM 시스템",
+  "광전 특성 분석에 특화된 TEM 측정 장비",
+  "저온에서 전기적 특성을 분석하는 TEM 장비",
+  "기계적 + 전기적 특성을 동시에 분석하는 시스템",
+  "고성능 투과전자현미경 기반 종합 분석 시스템"
+];
+
+const temItems = Array.from({ length: 20 }).map((_, i) => ({
+  title: `TEM ${i + 1}`,
+  description: temDescriptions[i],
+  image: `/products/tem${i + 1}.png`
+}));
 
 const ionCoaterProducts: Product[] = [
   makeProduct({
