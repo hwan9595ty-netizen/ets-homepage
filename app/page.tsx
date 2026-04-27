@@ -653,11 +653,23 @@ const temDescriptions = [
   "고성능 투과전자현미경 기반 종합 분석 시스템"
 ];
 
-const temItems = Array.from({ length: 20 }).map((_, i) => ({
-  title: `TEM ${i + 1}`,
-  description: temDescriptions[i],
-  image: `/products/tem${i + 1}.png`
-}));
+const temProducts: Product[] = Array.from({ length: 20 }, (_, i) =>
+  makeProduct({
+    slug: `tem-${String(i + 1).padStart(2, "0")}`,
+    category: "tem",
+    title: `TEM-${String(i + 1).padStart(2, "0")}`,
+    categoryLabel: "TEM",
+    type: "TEM",
+    image: `/products/tem-${String(i + 1).padStart(2, "0")}.png`,
+    subtitle: "TRANSMISSION ELECTRON MICROSCOPE",
+    description: temDescriptions[i],
+    overview: temDescriptions[i],
+    features: ["고해상도 분석", "나노 구조 관찰", "정밀 데이터 확보", "연구용 최적화"],
+    useOptions: false,
+    useSoftware: false,
+    useGallery: false,
+  })
+);
 
 const ionCoaterProducts: Product[] = [
   makeProduct({
