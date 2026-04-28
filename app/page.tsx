@@ -207,7 +207,7 @@ const translations: Record<string, { en: string; zh: string }> = {
   "ION COATING SOLUTION": { en: "ION COATING SOLUTION", zh: "离子镀膜解决方案" },
   "TRANSMISSION ELECTRON MICROSCOPE": { en: "TRANSMISSION ELECTRON MICROSCOPE", zh: "透射电子显微镜" },
   "Normal SEM": { en: "Normal SEM", zh: "标准扫描电子显微镜" },
-  "MEMS-TEM-STM Multi-Field": { en: "MEMS-TEM-STM Multi-Field", zh: "MEMS-TEM-STM Multi-Field" },
+  "다중 필드 측정 시스템": { en: "MEMS-TEM-STM Multi-Field", zh: "MEMS-TEM-STM Multi-Field" },
   "High-Temperature Mechanics": { en: "High-Temperature Mechanics", zh: "High-Temperature Mechanics" },
   "TEM-STM Low Temperature Electrical": { en: "TEM-STM Low Temperature Electrical", zh: "TEM-STM Low Temperature Electrical" },
   "TEM-STM Photoelectric Integrated": { en: "TEM-STM Photoelectric Integrated", zh: "TEM-STM Photoelectric Integrated" },
